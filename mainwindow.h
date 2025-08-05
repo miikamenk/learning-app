@@ -20,5 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QPixmap lastPastedImage;
+    void keyPressEvent(QKeyEvent *event);
+    void resizeEvent(QResizeEvent *event);
 };
 #endif // MAINWINDOW_H
