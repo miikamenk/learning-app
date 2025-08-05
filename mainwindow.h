@@ -23,5 +23,8 @@ private:
     QPixmap lastPastedImage;
     void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event);
+
+private slots:
+    void openSettings();
 };
 #endif // MAINWINDOW_H
