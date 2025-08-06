@@ -19,11 +19,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
-    ui->clipboard_text->setAlignment(Qt::AlignCenter);
-    ui->clipboard_text->setWordWrap(true);
-    ui->clipboard_text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    ui->clipboard_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
+    //ui->clipboard_text->setAlignment(Qt::AlignCenter);
+    //ui->clipboard_text->setWordWrap(true);
+    //ui->clipboard_text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    //ui->clipboard_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
     pinyin = new PinyinWrapper();
+    pinyinForm = new PinyinForm(this);
+    pinyinForm->show();
+
+    updatePinyinFormGeometry();
 }
 
 MainWindow::~MainWindow()
@@ -61,11 +65,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
             // handle image, save it to cache to handle resizeEvent
             QPixmap pixmap = QPixmap::fromImage(image);
             lastPastedImage = pixmap;
-            ui->clipboard_text->setPixmap(pixmap.scaled(
-                ui->clipboard_text->size(),
-                Qt::KeepAspectRatio,
-                Qt::SmoothTransformation
-            ));
+            // ui->clipboard_text->setPixmap(pixmap.scaled(
+            //     ui->clipboard_text->size(),
+            //     Qt::KeepAspectRatio,
+            //     Qt::SmoothTransformation
+            // ));
         }
         else if (mimeData->hasText()) {
             QString text = mimeData->text();
@@ -79,11 +83,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
               hanziPinyinList.append(qMakePair(qToken, qPinyin));
             }
-            auto pinyinWidget = new PinyinForm(this);
-            pinyinWidget->setText(hanziPinyinList);
-            pinyinWidget->setMinimumSize(400, 300);
-            ui->gridLayout->addWidget(pinyinWidget);
-                       // Combine original and pinyin
+            pinyinForm->setText(hanziPinyinList);
+            pinyinForm->setMinimumSize(400, 300);
         }
         else {
             qDebug() << "Clipboard contains unsupported data";
@@ -107,25 +108,45 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
     // Use the smaller dimension to determine font size
     int baseSize = std::min(windowHeight, windowWidth);
+    updatePinyinFormGeometry();
 
     // Calculate font size, adjust divisor to taste
     int newFontSize = std::clamp(baseSize / 25, 10, 28);
 
     // Only update if changed
-    static int currentFontSize = -1;
-    if (newFontSize != currentFontSize) {
-        currentFontSize = newFontSize;
-        QFont font = ui->clipboard_text->font();
-        font.setPointSize(newFontSize);
-        ui->clipboard_text->setFont(font);
-    }
+    // static int currentFontSize = -1;
+    // if (newFontSize != currentFontSize) {
+    //     currentFontSize = newFontSize;
+    //     QFont font = ui->clipboard_text->font();
+    //     font.setPointSize(newFontSize);
+    //     ui->clipboard_text->setFont(font);
+    // }
 
-    // Rescale image if one is present
-    if (!lastPastedImage.isNull()) {
-        ui->clipboard_text->setPixmap(lastPastedImage.scaled(
-            ui->clipboard_text->size(),
-            Qt::KeepAspectRatio,
-            Qt::SmoothTransformation
-        ));
-    }
+    // // Rescale image if one is present
+    // if (!lastPastedImage.isNull()) {
+    //     ui->clipboard_text->setPixmap(lastPastedImage.scaled(
+    //         ui->clipboard_text->size(),
+    //         Qt::KeepAspectRatio,
+    //         Qt::SmoothTransformation
+    //     ));
+    // }
+}
+
+void MainWindow::updatePinyinFormGeometry()
+{
+    int windowWidth = this->width();
+    int windowHeight = this->height();
+
+    int marginX = 30;
+    int marginY = 100;
+    int newWidth = windowWidth - 2 * marginX;
+    int newHeight = windowHeight - marginY;
+
+    pinyinForm->setGeometry(marginX, marginY / 2, newWidth, newHeight);
+    pinyinForm->update();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event) {
+    this->hide();  // Just hide the window
+    event->ignore();  // Prevent the app from quitting
 }

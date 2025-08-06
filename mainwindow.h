@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "pinyin.h"
+#include "pinyinform.h"
 #include "tokenizer.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,11 +26,16 @@ private:
     QPixmap lastPastedImage;
     PinyinWrapper *pinyin;
     Tokenizer *tokenizer;
+    PinyinForm *pinyinForm;
 
     void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void updatePinyinFormGeometry();
 
 private slots:
     void openSettings();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 };
 #endif // MAINWINDOW_H
