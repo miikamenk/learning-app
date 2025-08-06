@@ -1,5 +1,17 @@
 <RCC>
     <qresource prefix="/">
         <file>images/icon.png</file>
+        <file>dict/cantonese/License.txt</file>
+        <file>dict/cantonese/phrases_dict.txt</file>
+        <file>dict/cantonese/phrases_map.txt</file>
+        <file>dict/cantonese/trans_word.txt</file>
+        <file>dict/cantonese/user_dict.txt</file>
+        <file>dict/cantonese/word.txt</file>
+        <file>dict/mandarin/License.txt</file>
+        <file>dict/mandarin/phrases_dict.txt</file>
+        <file>dict/mandarin/phrases_map.txt</file>
+        <file>dict/mandarin/trans_word.txt</file>
+        <file>dict/mandarin/user_dict.txt</file>
+        <file>dict/mandarin/word.txt</file>
     </qresource>
 </RCC>

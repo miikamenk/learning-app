@@ -7,6 +7,7 @@
 #include <QLocalServer>
 #include <QCommandLineParser>
 #include <QDebug>
+#include <cpp-pinyin/G2pglobal.h>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -34,6 +35,8 @@ int main(int argc, char *argv[]) {
     parser.addHelpOption();
     parser.addOption({{"t", "toggle"}, "Toggle window visibility"});
     parser.process(app);
+
+    Pinyin::setDictionaryPath("dict");
 
     QLocalSocket socket;
     socket.connectToServer(SOCKET_NAME);

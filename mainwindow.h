@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "pinyin.h"
+#include "tokenizer.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,6 +23,9 @@ public:
 private:
     Ui::MainWindow *ui;
     QPixmap lastPastedImage;
+    PinyinWrapper *pinyin;
+    Tokenizer *tokenizer;
+
     void keyPressEvent(QKeyEvent *event);
     void resizeEvent(QResizeEvent *event);
 

@@ -12,6 +12,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , tokenizer(new Tokenizer())
 {
     ui->setupUi(this);
 
@@ -20,10 +21,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->clipboard_text->setAlignment(Qt::AlignCenter);
     ui->clipboard_text->setWordWrap(true);
     ui->clipboard_text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->clipboard_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
+    pinyin = new PinyinWrapper();
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete pinyin;
     delete ui;
 }
 
@@ -65,8 +70,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         else if (mimeData->hasText()) {
             QString text = mimeData->text();
             qDebug() << "Text pasted:" << text;
-            // Handle text
-            ui->clipboard_text->setText(text);
+            std::string pinyinString = pinyin->convert(text.toStdString());
+            qDebug() << tokenizer->tokenize(text.toStdString());
+
+            // Combine original and pinyin
+            QString combinedText = text + "\n" + QString::fromStdString(pinyinString);
+
+            // Display it
+            ui->clipboard_text->setText(combinedText);
         }
         else {
             qDebug() << "Clipboard contains unsupported data";
