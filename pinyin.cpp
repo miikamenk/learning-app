@@ -11,10 +11,10 @@ std::string PinyinWrapper::convert(const std::string& hanzi) {
         hanzi,
         Pinyin::ManTone::Style::TONE,
         Pinyin::Error::Default,
-        true,  // keep non-Hanzi
-        true, // no whitespace split
-        false   // enable polyphonic disambiguation
+        true,
+        true,
+        false
     );
     qDebug() << result.toStdStr(" ");
-    return result.toStdStr(" ");
+    return result.toStdStr("");
 }

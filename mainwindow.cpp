@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "settingsform.h"
+#include "pinyinform.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->clipboard_text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->clipboard_text->setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse);
     pinyin = new PinyinWrapper();
-
 }
 
 MainWindow::~MainWindow()
@@ -70,14 +70,20 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         else if (mimeData->hasText()) {
             QString text = mimeData->text();
             qDebug() << "Text pasted:" << text;
-            std::string pinyinString = pinyin->convert(text.toStdString());
-            qDebug() << tokenizer->tokenize(text.toStdString());
+            std::vector<std::string> tokens = tokenizer->tokenize(text.toStdString());
+            QList<QPair<QString, QString>> hanziPinyinList;
+            for (const auto& token : tokens) {
+              std::string pinyinResult = pinyin->convert(token);
+              QString qToken = QString::fromStdString(token);
+              QString qPinyin = QString::fromStdString(pinyinResult);
 
-            // Combine original and pinyin
-            QString combinedText = text + "\n" + QString::fromStdString(pinyinString);
-
-            // Display it
-            ui->clipboard_text->setText(combinedText);
+              hanziPinyinList.append(qMakePair(qToken, qPinyin));
+            }
+            auto pinyinWidget = new PinyinForm(this);
+            pinyinWidget->setText(hanziPinyinList);
+            pinyinWidget->setMinimumSize(400, 300);
+            ui->gridLayout->addWidget(pinyinWidget);
+                       // Combine original and pinyin
         }
         else {
             qDebug() << "Clipboard contains unsupported data";

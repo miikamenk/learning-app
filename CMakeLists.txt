@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        pinyinform.h
+        pinyinform.cpp
         ${TS_FILES}
 )
 
@@ -32,6 +34,7 @@ qt_add_executable(cihuishu
         ${PROJECT_SOURCES}
         settingsform.h settingsform.cpp settingsform.ui pinyin.h pinyin.cpp
         tokenizer.h tokenizer.cpp
+        pinyinform.h pinyinform.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET cihuishu APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -60,7 +63,6 @@ add_custom_command(TARGET cihuishu POST_BUILD
         "${CMAKE_SOURCE_DIR}/dict"
         "$<TARGET_FILE_DIR:cihuishu>/dict"
 )
-
 target_link_libraries(cihuishu PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(cihuishu PRIVATE cpp-pinyin::cpp-pinyin)
 target_include_directories(cihuishu PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
